@@ -86,6 +86,10 @@ def read_inputs(filename, height, padding, num_quant_levels, p_norm,
   # Input scan as sdf.
   input_scan = read_input_float_feature(feature_map, 'input_sdf', shape=None)
   (scene_dim_z, scene_dim_y, scene_dim_x) = input_scan.shape
+  
+  target_scan = None
+  target_semantics = None
+  
   # Target scan as df.
   if 'target_df' in feature_map.feature:
     target_scan = read_input_float_feature(
@@ -218,6 +222,10 @@ def export_prediction_to_mesh(outprefix, input_sdf, output_df, output_sem,
   save_target = None if target_df is None else np.copy(save_input_sdf)
   save_input_sdf[:, FLAGS.pad_test:FLAGS.pad_test + scene_dim_y, :] = input_sdf
   save_prediction[:, FLAGS.pad_test:FLAGS.pad_test + scene_dim_y, :] = output_df
+  
+  
+  save_errors = np.zeros(shape=save_prediction.shape)
+  
   if target_df is not None:
     save_target[:, FLAGS.pad_test:FLAGS.pad_test + scene_dim_y, :] = target_df
     # For error visualization as colors on mesh.
@@ -234,6 +242,12 @@ def export_prediction_to_mesh(outprefix, input_sdf, output_df, output_sem,
       save_target_sem[:, FLAGS.pad_test:
                       FLAGS.pad_test + scene_dim_y, :] = target_sem
 
+  print("save_input_sdf: ",save_input_sdf)
+  print("save_prediction: ",save_prediction)
+  print("save_target: ",save_target)
+  print("save_errors: ",save_errors)
+  print("save_pred_sem: ",save_pred_sem)
+  print("save_target_sem: ",save_target_sem)
   # Save as mesh.
   util.save_iso_meshes(
       [save_input_sdf, save_prediction, save_target],

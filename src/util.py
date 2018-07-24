@@ -118,6 +118,8 @@ def save_iso_meshes(dfs, errs, semantics, filenames, isoval=1):
   assert len(dfs) == len(filenames) and (
       errs is None or len(dfs) == len(errs)) and (semantics is None or
                                                   len(dfs) == len(semantics))
+                                                  
+  print("filenames: ", filenames)
   # Save semantics meshes if applicable.
   if semantics is not None:
     for i in range(len(filenames)):
